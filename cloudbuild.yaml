@@ -1,0 +1,30 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/testmlops-446623/test-app:123', '.']
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/testmlops-446623/test-app:123']
+
+- name: 'gcr.io/testmlops-446623/test-app:123'
+  entrypoint: 'bash'
+  args:
+   - '-c'
+   - |
+      python -m pytest
+  
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args:
+   - 'run'
+   - 'deploy'
+   - 'py-bq-load'
+   - '--image'
+   - 'gcr.io/testmlops-446623/test-app:123'
+   - '--region'
+   - 'us-central1'
+   - '--allow-unauthenticated'
+images:
+- 'gcr.io/testmlops-446623/test-app:123'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

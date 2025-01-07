@@ -1,11 +1,11 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/testmlops-446623/test-app:123', '.']
+  args: ['build', '-t', 'gcr.io/testmlops-446623/test-app:$COMMIT_SHA', '.']
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/testmlops-446623/test-app:123']
+  args: ['push', 'gcr.io/testmlops-446623/test-app:$COMMIT_SHA']
 
-- name: 'gcr.io/testmlops-446623/test-app:123'
+- name: 'gcr.io/testmlops-446623/test-app:$COMMIT_SHA'
   entrypoint: 'bash'
   args:
    - '-c'
@@ -19,12 +19,12 @@ steps:
    - 'deploy'
    - 'py-bq-load'
    - '--image'
-   - 'gcr.io/testmlops-446623/test-app:123'
+   - 'gcr.io/testmlops-446623/test-app:$COMMIT_SHA'
    - '--region'
    - 'us-central1'
    - '--allow-unauthenticated'
 images:
-- 'gcr.io/testmlops-446623/test-app:123'
+- 'gcr.io/testmlops-446623/test-app:$COMMIT_SHA'
 
 options:
   logging: CLOUD_LOGGING_ONLY
